@@ -14,6 +14,7 @@ import {
   FlaskConical,
 } from 'lucide-react'
 import clsx from 'clsx'
+import UserSection from '../components/UserSection'
 
 interface NavItem {
   label: string
@@ -122,6 +123,10 @@ export default function RetailerLayout() {
             </div>
           ))}
         </nav>
+
+        <div className="border-t border-gray-200">
+          <UserSection />
+        </div>
       </aside>
 
       <main className="flex-1 overflow-y-auto">

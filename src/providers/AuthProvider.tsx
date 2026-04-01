@@ -1,0 +1,96 @@
+import { createContext, useContext, useEffect, useMemo } from 'react';
+import { useAuth, useUser } from '@clerk/clerk-react';
+import { registerTokenGetter } from '../lib/api';
+
+interface AuthUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  imageUrl: string;
+}
+
+interface AuthContextValue {
+  user: AuthUser | null;
+  isLoaded: boolean;
+  isSignedIn: boolean;
+  signOut: () => Promise<void>;
+  getToken: () => Promise<string | null>;
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+/** Provides auth state from Clerk (or dev fallback) to the component tree */
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  if (!CLERK_KEY) {
+    return <DevAuthProvider>{children}</DevAuthProvider>;
+  }
+  return <ClerkAuthProvider>{children}</ClerkAuthProvider>;
+}
+
+function ClerkAuthProvider({ children }: { children: React.ReactNode }) {
+  const { isLoaded, isSignedIn, signOut, getToken } = useAuth();
+  const { user } = useUser();
+
+  useEffect(() => {
+    registerTokenGetter(() => getToken());
+    return () => registerTokenGetter(null);
+  }, [getToken]);
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user: user
+        ? {
+            id: user.id,
+            email: user.primaryEmailAddress?.emailAddress ?? '',
+            firstName: user.firstName ?? '',
+            lastName: user.lastName ?? '',
+            imageUrl: user.imageUrl ?? '',
+          }
+        : null,
+      isLoaded,
+      isSignedIn: !!isSignedIn,
+      signOut: () => signOut(),
+      getToken: () => getToken(),
+    }),
+    [user, isLoaded, isSignedIn, signOut, getToken],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+function DevAuthProvider({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    registerTokenGetter(() => Promise.resolve('dev-token'));
+    return () => registerTokenGetter(null);
+  }, []);
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user: {
+        id: 'dev-user',
+        email: 'dev@zewbie.local',
+        firstName: 'Dev',
+        lastName: 'User',
+        imageUrl: '',
+      },
+      isLoaded: true,
+      isSignedIn: true,
+      signOut: async () => {
+        window.location.href = '/auth/login';
+      },
+      getToken: async () => 'dev-token',
+    }),
+    [],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuthContext() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuthContext must be used within AuthProvider');
+  return ctx;
+}

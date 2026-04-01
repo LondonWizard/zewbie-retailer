@@ -1,8 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 
 import RetailerLayout from './layouts/RetailerLayout'
 import AuthLayout from './layouts/AuthLayout'
 import OnboardingLayout from './layouts/OnboardingLayout'
+import ProtectedRoute from './components/ProtectedRoute'
 
 import Landing from './pages/auth/Landing'
 import Apply from './pages/auth/Apply'
@@ -37,30 +38,31 @@ import ShippingSettings from './pages/shipping/ShippingSettings'
 import Profile from './pages/account/Profile'
 import Settings from './pages/account/Settings'
 
-/** Root application component — defines all routes across three layout groups */
+/** Root application component — defines all routes across layout groups */
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public / landing */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/apply" element={<Apply />} />
+    <Routes>
+      {/* Public / landing */}
+      <Route path="/" element={<Landing />} />
+      <Route path="/apply" element={<Apply />} />
 
-        {/* Auth pages — centered card layout */}
-        <Route element={<AuthLayout />}>
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/register" element={<Register />} />
-          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-          <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/auth/verify-email/:token" element={<VerifyEmail />} />
-        </Route>
+      {/* Auth pages — centered card layout */}
+      <Route element={<AuthLayout />}>
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/register" element={<Register />} />
+        <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+        <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/auth/verify-email/:token" element={<VerifyEmail />} />
+      </Route>
 
-        {/* Onboarding — step wizard layout */}
+      {/* Protected routes */}
+      <Route element={<ProtectedRoute />}>
+        {/* Onboarding */}
         <Route element={<OnboardingLayout />}>
           <Route path="/onboarding" element={<Onboarding />} />
         </Route>
 
-        {/* Authenticated retailer pages — sidebar layout */}
+        {/* Authenticated retailer pages */}
         <Route element={<RetailerLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
 
@@ -86,7 +88,7 @@ export default function App() {
 
           <Route path="/api-test" element={<ApiTestPanel />} />
         </Route>
-      </Routes>
-    </BrowserRouter>
+      </Route>
+    </Routes>
   )
 }
