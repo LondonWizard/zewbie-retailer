@@ -1,10 +1,13 @@
 import { SignIn } from '@clerk/clerk-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-/** Login page for existing retailers */
+/** Retailer login page — shows Clerk SignIn with unauthorized error handling */
 export default function Login() {
+  const [searchParams] = useSearchParams();
+  const isUnauthorized = searchParams.get('error') === 'unauthorized';
+
   if (!CLERK_KEY) {
     return (
       <div className="text-center">
@@ -18,7 +21,12 @@ export default function Login() {
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col items-center gap-4">
+      {isUnauthorized && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm max-w-md">
+          Access denied. This portal is restricted to approved retailers only.
+        </div>
+      )}
       <SignIn
         path="/auth/login"
         signUpUrl="/auth/register"

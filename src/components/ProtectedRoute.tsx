@@ -1,9 +1,9 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthContext } from '../providers/AuthProvider';
 
-/** Route guard — redirects to login when unauthenticated, shows spinner while loading */
+/** Route guard — redirects to login when unauthenticated or non-RETAILER, shows spinner while loading */
 export default function ProtectedRoute() {
-  const { isLoaded, isSignedIn } = useAuthContext();
+  const { isLoaded, isSignedIn, user } = useAuthContext();
   const location = useLocation();
 
   if (!isLoaded) {
@@ -14,7 +14,7 @@ export default function ProtectedRoute() {
     );
   }
 
-  if (!isSignedIn) {
+  if (!isSignedIn || user?.role !== 'RETAILER') {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 

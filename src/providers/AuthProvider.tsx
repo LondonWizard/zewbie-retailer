@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useMemo } from 'react';
-import { useAuth, useUser } from '@clerk/clerk-react';
+import { useAuth, useUser, useClerk } from '@clerk/clerk-react';
 import { registerTokenGetter } from '../lib/api';
 
 interface AuthUser {
   id: string;
   email: string;
+  role: string;
   firstName: string;
   lastName: string;
   imageUrl: string;
@@ -33,11 +34,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 function ClerkAuthProvider({ children }: { children: React.ReactNode }) {
   const { isLoaded, isSignedIn, signOut, getToken } = useAuth();
   const { user } = useUser();
+  const clerk = useClerk();
 
   useEffect(() => {
     registerTokenGetter(() => getToken());
     return () => registerTokenGetter(null);
   }, [getToken]);
+
+  const role = (user?.publicMetadata?.role as string) ?? '';
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user && role !== 'RETAILER') {
+      clerk.signOut().then(() => {
+        window.location.href = '/auth/login?error=unauthorized';
+      });
+    }
+  }, [isLoaded, isSignedIn, user, role, clerk]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
@@ -45,17 +57,18 @@ function ClerkAuthProvider({ children }: { children: React.ReactNode }) {
         ? {
             id: user.id,
             email: user.primaryEmailAddress?.emailAddress ?? '',
+            role,
             firstName: user.firstName ?? '',
             lastName: user.lastName ?? '',
             imageUrl: user.imageUrl ?? '',
           }
         : null,
       isLoaded,
-      isSignedIn: !!isSignedIn,
+      isSignedIn: !!isSignedIn && role === 'RETAILER',
       signOut: () => signOut(),
       getToken: () => getToken(),
     }),
-    [user, isLoaded, isSignedIn, signOut, getToken],
+    [user, isLoaded, isSignedIn, signOut, getToken, role],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -72,8 +85,9 @@ function DevAuthProvider({ children }: { children: React.ReactNode }) {
       user: {
         id: 'dev-user',
         email: 'dev@zewbie.local',
+        role: 'RETAILER',
         firstName: 'Dev',
-        lastName: 'User',
+        lastName: 'Retailer',
         imageUrl: '',
       },
       isLoaded: true,
