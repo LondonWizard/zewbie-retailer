@@ -1,91 +1,96 @@
 # Zewbie Retailer Portal
 
-React + Vite + TypeScript front-end for the Zewbie retailer dashboard. Retailers use this portal to manage products, fulfill orders, track finances, and configure shipping.
+**Retailer-facing** dashboard for the Zewbie marketplace: manage applications, products, inventory, orders, payouts, shipping, and account settings. Built with **React**, **Vite**, **TypeScript**, and **TailwindCSS**.
 
-## Tech Stack
+**Live:** [https://retailer.zewbie.com](https://retailer.zewbie.com)
 
-| Layer       | Technology                          |
-|-------------|-------------------------------------|
-| Framework   | React 19 + TypeScript               |
-| Build       | Vite 6                              |
-| Styling     | TailwindCSS 4 (Vite plugin)         |
-| Routing     | React Router v7 (BrowserRouter)     |
-| State       | Zustand (global), React Query (server) |
-| HTTP        | Axios (`src/lib/api.ts`)            |
-| Icons       | Lucide React                        |
+## Quick start
 
-## Project Structure
-
-```
-src/
-├── App.tsx                   # Route definitions
-├── main.tsx                  # Entry point
-├── index.css                 # Tailwind import
-├── lib/
-│   └── api.ts                # Axios instance (VITE_API_URL)
-├── layouts/
-│   ├── RetailerLayout.tsx    # Sidebar + main content (authenticated)
-│   ├── AuthLayout.tsx        # Centered card (login/register)
-│   └── OnboardingLayout.tsx  # Step wizard wrapper
-└── pages/
-    ├── Dashboard.tsx
-    ├── ApiTestPanel.tsx
-    ├── auth/                 # Landing, Apply, Login, Register, ForgotPassword, ResetPassword, VerifyEmail
-    ├── onboarding/           # Onboarding (multi-step wizard)
-    ├── products/             # ProductList, ProductCreate, ProductDetail, ProductImport
-    ├── inventory/            # Inventory
-    ├── orders/               # OrderList, OrderDetail, OrderStats
-    ├── finances/             # Payouts, PayoutSetup, Revenue
-    ├── shipping/             # ShippingSettings
-    └── account/              # Profile, Settings
-```
-
-## Routes
-
-| Path                          | Page              | Layout          |
-|-------------------------------|-------------------|-----------------|
-| `/`                           | Landing           | standalone      |
-| `/apply`                      | Apply             | standalone      |
-| `/auth/login`                 | Login             | AuthLayout      |
-| `/auth/register`              | Register          | AuthLayout      |
-| `/auth/forgot-password`       | ForgotPassword    | AuthLayout      |
-| `/auth/reset-password/:token` | ResetPassword     | AuthLayout      |
-| `/auth/verify-email/:token`   | VerifyEmail       | AuthLayout      |
-| `/onboarding`                 | Onboarding        | OnboardingLayout|
-| `/dashboard`                  | Dashboard         | RetailerLayout  |
-| `/products`                   | ProductList       | RetailerLayout  |
-| `/products/new`               | ProductCreate     | RetailerLayout  |
-| `/products/import`            | ProductImport     | RetailerLayout  |
-| `/products/:id`               | ProductDetail     | RetailerLayout  |
-| `/inventory`                  | Inventory         | RetailerLayout  |
-| `/orders`                     | OrderList         | RetailerLayout  |
-| `/orders/stats`               | OrderStats        | RetailerLayout  |
-| `/orders/:id`                 | OrderDetail       | RetailerLayout  |
-| `/finances/payouts`           | Payouts           | RetailerLayout  |
-| `/finances/payouts/setup`     | PayoutSetup       | RetailerLayout  |
-| `/finances/revenue`           | Revenue           | RetailerLayout  |
-| `/shipping/settings`          | ShippingSettings  | RetailerLayout  |
-| `/account/profile`            | Profile           | RetailerLayout  |
-| `/account/settings`           | Settings          | RetailerLayout  |
-| `/api-test`                   | ApiTestPanel      | RetailerLayout  |
-
-## Getting Started
-
-```bash
-cp .env.example .env
+```powershell
+git clone https://github.com/zewbie/zewbie-retailer.git
+cd zewbie-retailer
 npm install
-npm run dev          # starts on http://localhost:5175
+copy .env.example .env
+npm run dev
 ```
 
-## Environment Variables
+Dev server: **`http://localhost:5175`** (`vite.config.ts`).
 
-| Variable       | Description            | Default                |
-|----------------|------------------------|------------------------|
-| `VITE_API_URL` | Backend API base URL   | `http://localhost:3000` |
+## Architecture
 
-## Design Decisions
+| Piece | Purpose |
+|-------|---------|
+| **`RetailerLayout`** | Sidebar + main area for authenticated retailer tools. |
+| **`AuthLayout`** | Centered flows for login, registration, and password reset. |
+| **`OnboardingLayout`** | Wizard shell for retailer onboarding. |
+| **`lib/api.ts`** | Axios client targeting `VITE_API_URL` with retailer auth from `localStorage`. |
 
-- **All pages are placeholders** — every route renders a consistent stub showing its name, path, and description. Implement each page incrementally.
-- **Three layouts** — `RetailerLayout` (sidebar for authenticated), `AuthLayout` (centered card), `OnboardingLayout` (wizard wrapper).
-- **API client** — centralised Axios instance in `src/lib/api.ts` with automatic auth token attachment from `localStorage`.
-- **API Test Panel** — `/api-test` provides one-click endpoint testing against the backend during development.
+## Route list (26 pages)
+
+The product surface is **26** screens; **`App.tsx` currently registers 24 path patterns** (expand with new `Route` entries as you add dedicated steps).
+
+| Path | Page | Layout |
+|------|------|--------|
+| `/` | Landing | — |
+| `/apply` | Apply to sell | — |
+| `/auth/login` | Login | Auth |
+| `/auth/register` | Register | Auth |
+| `/auth/forgot-password` | Forgot password | Auth |
+| `/auth/reset-password/:token` | Reset password | Auth |
+| `/auth/verify-email/:token` | Verify email | Auth |
+| `/onboarding` | Onboarding wizard | Onboarding |
+| `/dashboard` | Dashboard | Retailer |
+| `/products` | Product list | Retailer |
+| `/products/new` | Create product | Retailer |
+| `/products/import` | Import products | Retailer |
+| `/products/:id` | Product detail | Retailer |
+| `/inventory` | Inventory | Retailer |
+| `/orders` | Order list | Retailer |
+| `/orders/stats` | Order stats | Retailer |
+| `/orders/:id` | Order detail | Retailer |
+| `/finances/payouts` | Payouts | Retailer |
+| `/finances/payouts/setup` | Payout setup | Retailer |
+| `/finances/revenue` | Revenue | Retailer |
+| `/shipping/settings` | Shipping settings | Retailer |
+| `/account/profile` | Profile | Retailer |
+| `/account/settings` | Settings | Retailer |
+| `/api-test` | API test panel | Retailer |
+
+## Environment variables
+
+| Variable | Description | Default (example) |
+|----------|-------------|-------------------|
+| `VITE_API_URL` | Zewbie API base URL | `http://localhost:3000` |
+
+## Project structure
+
+```text
+src/
+├── App.tsx
+├── main.tsx
+├── lib/api.ts
+├── layouts/
+│   ├── RetailerLayout.tsx
+│   ├── AuthLayout.tsx
+│   └── OnboardingLayout.tsx
+└── pages/
+    ├── auth/
+    ├── onboarding/
+    ├── products/
+    ├── inventory/
+    ├── orders/
+    ├── finances/
+    ├── shipping/
+    └── account/
+```
+
+## Related repositories
+
+- **zewbie-api** — Backend API.
+- **zewbie-admin** — Platform administration.
+- **zewbie-app** — Creator / user portal.
+- **zewbie-infra** — Infrastructure and local stack.
+
+## License
+
+Private (see repository settings).
