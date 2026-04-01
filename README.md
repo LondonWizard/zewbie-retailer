@@ -94,3 +94,24 @@ src/
 ## License
 
 Private (see repository settings).
+
+## Available Scripts
+
+| Command           | Description                              |
+|-------------------|------------------------------------------|
+| 
+pm run dev     | Start Vite dev server (port 5175)        |
+| 
+pm run build   | Type-check and build for production      |
+| 
+pm run lint    | Run ESLint with auto-fix                 |
+| 
+pm run preview | Preview the production build locally     |
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for branch naming, commit conventions, and PR workflow.
+
+## License
+
+Private — all rights reserved.
