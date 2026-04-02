@@ -4,10 +4,10 @@ import {
   type ColumnDef, type SortingState,
 } from '@tanstack/react-table';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ArrowUpDown } from 'lucide-react';
-import clsx from 'clsx';
 
 interface DataTableProps<T> {
-  columns: ColumnDef<T, unknown>[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columns: ColumnDef<T, any>[];
   data: T[];
   searchKey?: string;
   searchPlaceholder?: string;

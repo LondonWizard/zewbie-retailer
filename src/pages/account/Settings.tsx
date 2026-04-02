@@ -1,11 +1,9 @@
-import { useForm } from 'react-hook-form';
 import { Save } from 'lucide-react';
 import * as Switch from '@radix-ui/react-switch';
 import { useState } from 'react';
 import api from '../../lib/api';
 import { toast } from 'sonner';
 
-interface SettingsForm { emailNotifications: boolean; orderAlerts: boolean; weeklyReport: boolean; }
 
 export default function Settings() {
   const [settings, setSettings] = useState({ emailNotifications: true, orderAlerts: true, weeklyReport: false });

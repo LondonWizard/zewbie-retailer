@@ -3,7 +3,6 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { Wallet } from 'lucide-react';
 import { DataTable } from '../../components/ui/DataTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
-import { StatCard } from '../../components/ui/StatCard';
 import api from '../../lib/api';
 import { toast } from 'sonner';
 

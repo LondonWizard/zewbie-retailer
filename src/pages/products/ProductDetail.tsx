@@ -15,7 +15,7 @@ export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({ resolver: zodResolver(schema) as any });
 
   useEffect(() => {
     api.get(`/v1/retailer/products/${id}`).then((r) => reset(r.data)).catch(() => toast.error('Not found')).finally(() => setLoading(false));

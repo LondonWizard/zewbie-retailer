@@ -11,7 +11,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function ProductCreate() {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({ resolver: zodResolver(schema), defaultValues: { name: '', sku: '', category: '', price: 0, stock: 0, description: '' } });
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({ resolver: zodResolver(schema) as any, defaultValues: { name: '', sku: '', category: '', price: 0, stock: 0, description: '' } });
 
   async function onSubmit(data: FormData) {
     try { await api.post('/v1/retailer/products', data); toast.success('Product created'); navigate('/products'); } catch { toast.error('Failed'); }

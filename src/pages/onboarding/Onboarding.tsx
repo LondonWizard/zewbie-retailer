@@ -26,7 +26,7 @@ export default function Onboarding() {
   const [capInput, setCapInput] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<BusinessForm>({ resolver: zodResolver(businessSchema) });
+  const { register, handleSubmit, formState: { errors } } = useForm<BusinessForm>({ resolver: zodResolver(businessSchema) as any });
 
   function onBusinessSubmit(data: BusinessForm) { setBusinessData(data); setStep(1); }
 
