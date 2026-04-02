@@ -1,4 +1,6 @@
+import { Suspense } from 'react'
 import { Outlet, Link } from 'react-router-dom'
+import { PageSkeleton } from '../components/ui/PageSkeleton'
 
 /** Step-wizard layout for retailer onboarding flow */
 export default function OnboardingLayout() {
@@ -11,7 +13,9 @@ export default function OnboardingLayout() {
       </header>
       <main className="flex-1 flex items-start justify-center px-4 py-10">
         <div className="w-full max-w-2xl bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-          <Outlet />
+          <Suspense fallback={<PageSkeleton />}>
+            <Outlet />
+          </Suspense>
         </div>
       </main>
     </div>

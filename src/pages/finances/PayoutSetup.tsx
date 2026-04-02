@@ -46,12 +46,12 @@ export default function PayoutSetup() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
-            <input {...register('accountNumber')} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+            <input {...register('accountNumber')} type="password" autoComplete="off" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
             {errors.accountNumber && <p className="text-xs text-red-500 mt-1">{errors.accountNumber.message}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Routing Number</label>
-            <input {...register('routingNumber')} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+            <input {...register('routingNumber')} type="password" autoComplete="off" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
             {errors.routingNumber && <p className="text-xs text-red-500 mt-1">{errors.routingNumber.message}</p>}
           </div>
         </div>

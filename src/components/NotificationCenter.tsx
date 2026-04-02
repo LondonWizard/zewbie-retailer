@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Bell, ShoppingCart, CreditCard, AlertTriangle, Info, Check, X } from 'lucide-react'
 import { create } from 'zustand'
 import { useTranslation } from 'react-i18next'
+import api from '../lib/api'
 
 type NotificationType = 'order' | 'payment' | 'system' | 'alert'
 
@@ -16,6 +17,7 @@ interface Notification {
 
 interface NotificationState {
   notifications: Notification[]
+  setNotifications: (notifications: Notification[]) => void
   markAsRead: (id: string) => void
   markAllAsRead: () => void
   dismiss: (id: string) => void
@@ -36,32 +38,8 @@ const typeColors: Record<NotificationType, string> = {
 }
 
 export const useNotificationStore = create<NotificationState>((set) => ({
-  notifications: [
-    {
-      id: '1',
-      type: 'order',
-      title: 'New order received',
-      message: 'Order #1042 has been placed.',
-      read: false,
-      createdAt: new Date(),
-    },
-    {
-      id: '2',
-      type: 'payment',
-      title: 'Payment processed',
-      message: 'Payout of $245.00 has been initiated.',
-      read: false,
-      createdAt: new Date(Date.now() - 3600000),
-    },
-    {
-      id: '3',
-      type: 'system',
-      title: 'Welcome to Zewbie',
-      message: 'Get started by setting up your store.',
-      read: true,
-      createdAt: new Date(Date.now() - 86400000),
-    },
-  ],
+  notifications: [],
+  setNotifications: (notifications) => set({ notifications }),
   markAsRead: (id) =>
     set((state) => ({
       notifications: state.notifications.map((n) =>
@@ -107,8 +85,21 @@ function groupByDate(notifications: Notification[]) {
 export default function NotificationCenter() {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
-  const { notifications, markAsRead, markAllAsRead, dismiss } = useNotificationStore()
+  const { notifications, setNotifications, markAsRead, markAllAsRead, dismiss } = useNotificationStore()
   const unreadCount = notifications.filter((n) => !n.read).length
+
+  useEffect(() => {
+    api.get('/v1/retailer/notifications')
+      .then((r) => {
+        const items = (r.data?.notifications ?? r.data ?? []).map((n: any) => ({
+          ...n,
+          createdAt: new Date(n.createdAt),
+        }))
+        setNotifications(items)
+      })
+      .catch(() => {})
+  }, [setNotifications])
+
   const grouped = useMemo(() => groupByDate(notifications), [notifications])
 
   return (

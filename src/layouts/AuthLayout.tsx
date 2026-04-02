@@ -1,4 +1,6 @@
+import { Suspense } from 'react'
 import { Outlet, Link } from 'react-router-dom'
+import { PageSkeleton } from '../components/ui/PageSkeleton'
 
 /** Centered layout for authentication pages (login, register, etc.) */
 export default function AuthLayout() {
@@ -8,7 +10,9 @@ export default function AuthLayout() {
         <h1 className="text-2xl font-bold text-indigo-600">Zewbie Retailer</h1>
       </Link>
       <div className="w-full max-w-md bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-        <Outlet />
+        <Suspense fallback={<PageSkeleton />}>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   )

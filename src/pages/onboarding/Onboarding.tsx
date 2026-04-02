@@ -88,7 +88,14 @@ export default function Onboarding() {
                 <FileText size={32} className="mx-auto text-gray-400 mb-2" />
                 <label className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium cursor-pointer hover:bg-gray-50">
                   Choose Files
-                  <input type="file" multiple className="hidden" onChange={(e) => setDocuments(Array.from(e.target.files ?? []))} />
+                  <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" className="hidden" onChange={(e) => {
+                    const files = Array.from(e.target.files ?? []);
+                    const MAX_SIZE = 10 * 1024 * 1024;
+                    const ALLOWED = ['application/pdf','image/jpeg','image/png','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                    const invalid = files.filter(f => f.size > MAX_SIZE || !ALLOWED.includes(f.type));
+                    if (invalid.length) { alert(`Some files rejected: ${invalid.map(f => f.name).join(', ')}. Max 10MB, allowed: PDF, JPG, PNG, DOC, DOCX.`); return; }
+                    setDocuments(files);
+                  }} />
                 </label>
               </div>
               {documents.length > 0 && <div className="space-y-1">{documents.map((d, i) => <p key={i} className="text-sm text-gray-600 flex items-center gap-2"><FileText size={14} /> {d.name}</p>)}</div>}

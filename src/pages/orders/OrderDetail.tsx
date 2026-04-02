@@ -36,6 +36,10 @@ export default function OrderDetail() {
   async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const MAX_SIZE = 10 * 1024 * 1024;
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+    if (file.size > MAX_SIZE) { toast.error('Photo must be under 10MB'); return; }
+    if (!ALLOWED_TYPES.includes(file.type)) { toast.error('Only JPEG, PNG, and WebP photos allowed'); return; }
     setUploading(true);
     try {
       const fd = new FormData();

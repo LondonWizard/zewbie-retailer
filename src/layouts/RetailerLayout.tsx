@@ -16,7 +16,7 @@ import { PageSkeleton } from '../components/ui/PageSkeleton'
 interface NavItem { label: string; to: string; icon: React.ReactNode }
 interface NavSection { title: string; items: NavItem[] }
 
-const NAV_SECTIONS: NavSection[] = [
+const NAV_SECTIONS_ALL: NavSection[] = [
   { title: '', items: [
     { label: 'Dashboard', to: '/dashboard', icon: <LayoutDashboard size={18} /> },
   ]},
@@ -47,12 +47,16 @@ const NAV_SECTIONS: NavSection[] = [
   ]},
 ]
 
+const NAV_SECTIONS = import.meta.env.DEV
+  ? NAV_SECTIONS_ALL
+  : NAV_SECTIONS_ALL.filter((s) => !s.items.some((i) => i.label === 'API Tests'));
+
 export default function RetailerLayout() {
   const { t } = useTranslation()
   const { user } = useAuthContext()
   const location = useLocation()
 
-  if (user && !(user as any).onboardingComplete && !location.pathname.startsWith('/onboarding')) {
+  if (user && !user.onboardingComplete && !location.pathname.startsWith('/onboarding')) {
     return <Navigate to="/onboarding" replace />
   }
 

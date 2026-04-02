@@ -9,6 +9,7 @@ interface AuthUser {
   firstName: string;
   lastName: string;
   imageUrl: string;
+  onboardingComplete: boolean;
 }
 
 interface AuthContextValue {
@@ -71,6 +72,7 @@ function ClerkAuthProvider({ children }: { children: React.ReactNode }) {
             firstName: user.firstName ?? '',
             lastName: user.lastName ?? '',
             imageUrl: user.imageUrl ?? '',
+            onboardingComplete: (user.publicMetadata?.onboardingComplete as boolean) ?? false,
           }
         : null,
       isLoaded,
@@ -99,6 +101,7 @@ function DevAuthProvider({ children }: { children: React.ReactNode }) {
         firstName: 'Dev',
         lastName: 'Retailer',
         imageUrl: '',
+        onboardingComplete: true,
       },
       isLoaded: true,
       isSignedIn: true,

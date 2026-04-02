@@ -5,7 +5,6 @@ import { StatCard } from '../components/ui/StatCard';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { PageSkeleton } from '../components/ui/PageSkeleton';
 import api from '../lib/api';
-import { toast } from 'sonner';
 
 interface DashStats { activeOrders: number; pendingOrders: number; monthRevenue: number; qualityScore: number; }
 
@@ -15,20 +14,38 @@ export default function Dashboard() {
   const [stats, setStats] = useState<DashStats>({ activeOrders: 0, pendingOrders: 0, monthRevenue: 0, qualityScore: 0 });
   const [recentOrders, setRecentOrders] = useState<Array<{ id: string; productName: string; total: number; status: string; createdAt: string }>>([]);
   const [alerts, setAlerts] = useState<Array<{ type: string; message: string }>>([]);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
+  function load() {
+    setError(false); setLoading(true);
     Promise.allSettled([
       api.get('/v1/retailer/dashboard/stats'),
       api.get('/v1/retailer/orders?limit=10&sort=-createdAt'),
       api.get('/v1/retailer/alerts'),
     ]).then(([s, o, a]) => {
+      const allFailed = [s, o, a].every(r => r.status === 'rejected');
+      if (allFailed) { setError(true); return; }
       if (s.status === 'fulfilled') setStats(s.value.data);
       if (o.status === 'fulfilled') setRecentOrders(o.value.data?.orders ?? o.value.data ?? []);
       if (a.status === 'fulfilled') setAlerts(a.value.data?.alerts ?? a.value.data ?? []);
-    }).catch(() => toast.error('Failed to load')).finally(() => setLoading(false));
-  }, []);
+    }).catch(() => setError(true)).finally(() => setLoading(false));
+  }
+
+  useEffect(() => { load(); }, []);
 
   if (loading) return <PageSkeleton />;
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+          <p className="text-lg font-semibold text-gray-900 mb-2">Failed to load</p>
+          <p className="text-sm text-gray-500 mb-4">Could not fetch dashboard data.</p>
+          <button onClick={load} className="px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">Retry</button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-6 space-y-6">
