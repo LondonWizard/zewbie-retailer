@@ -31,7 +31,7 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !window.location.pathname.startsWith('/auth')) {
       window.location.href = '/auth/login';
     }
     return Promise.reject(error);

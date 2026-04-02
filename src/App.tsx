@@ -1,3 +1,4 @@
+import { lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 import RetailerLayout from './layouts/RetailerLayout'
@@ -5,38 +6,39 @@ import AuthLayout from './layouts/AuthLayout'
 import OnboardingLayout from './layouts/OnboardingLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 
-import Landing from './pages/auth/Landing'
-import Apply from './pages/auth/Apply'
-import Login from './pages/auth/Login'
-import Register from './pages/auth/Register'
-import ForgotPassword from './pages/auth/ForgotPassword'
-import ResetPassword from './pages/auth/ResetPassword'
-import VerifyEmail from './pages/auth/VerifyEmail'
+const Landing = lazy(() => import('./pages/auth/Landing'))
+const Apply = lazy(() => import('./pages/auth/Apply'))
+const Login = lazy(() => import('./pages/auth/Login'))
+const Register = lazy(() => import('./pages/auth/Register'))
+const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'))
+const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'))
+const VerifyEmail = lazy(() => import('./pages/auth/VerifyEmail'))
 
-import Onboarding from './pages/onboarding/Onboarding'
+const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'))
 
-import Dashboard from './pages/Dashboard'
-import ApiTestPanel from './pages/ApiTestPanel'
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const ApiTestPanel = lazy(() => import('./pages/ApiTestPanel'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
-import ProductList from './pages/products/ProductList'
-import ProductCreate from './pages/products/ProductCreate'
-import ProductDetail from './pages/products/ProductDetail'
-import ProductImport from './pages/products/ProductImport'
+const ProductList = lazy(() => import('./pages/products/ProductList'))
+const ProductCreate = lazy(() => import('./pages/products/ProductCreate'))
+const ProductDetail = lazy(() => import('./pages/products/ProductDetail'))
+const ProductImport = lazy(() => import('./pages/products/ProductImport'))
 
-import Inventory from './pages/inventory/Inventory'
+const Inventory = lazy(() => import('./pages/inventory/Inventory'))
 
-import OrderList from './pages/orders/OrderList'
-import OrderDetail from './pages/orders/OrderDetail'
-import OrderStats from './pages/orders/OrderStats'
+const OrderList = lazy(() => import('./pages/orders/OrderList'))
+const OrderDetail = lazy(() => import('./pages/orders/OrderDetail'))
+const OrderStats = lazy(() => import('./pages/orders/OrderStats'))
 
-import Payouts from './pages/finances/Payouts'
-import PayoutSetup from './pages/finances/PayoutSetup'
-import Revenue from './pages/finances/Revenue'
+const Payouts = lazy(() => import('./pages/finances/Payouts'))
+const PayoutSetup = lazy(() => import('./pages/finances/PayoutSetup'))
+const Revenue = lazy(() => import('./pages/finances/Revenue'))
 
-import ShippingSettings from './pages/shipping/ShippingSettings'
+const ShippingSettings = lazy(() => import('./pages/shipping/ShippingSettings'))
 
-import Profile from './pages/account/Profile'
-import Settings from './pages/account/Settings'
+const Profile = lazy(() => import('./pages/account/Profile'))
+const Settings = lazy(() => import('./pages/account/Settings'))
 
 /** Root application component — defines all routes across layout groups */
 export default function App() {
@@ -86,9 +88,11 @@ export default function App() {
           <Route path="/account/profile" element={<Profile />} />
           <Route path="/account/settings" element={<Settings />} />
 
-          <Route path="/api-test" element={<ApiTestPanel />} />
+          {import.meta.env.DEV && <Route path="/api-test" element={<ApiTestPanel />} />}
         </Route>
       </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

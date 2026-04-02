@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { Suspense } from 'react'
+import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Package, Upload, Warehouse, ShoppingCart,
   BarChart3, DollarSign, TrendingUp, Truck, User, Settings, FlaskConical,
@@ -6,8 +7,11 @@ import {
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 import UserSection from '../components/UserSection'
+import { useAuthContext } from '../providers/AuthProvider'
 import ThemeToggle from '../components/ThemeToggle'
 import NotificationCenter from '../components/NotificationCenter'
+import { ErrorBoundary } from '../components/ErrorBoundary'
+import { PageSkeleton } from '../components/ui/PageSkeleton'
 
 interface NavItem { label: string; to: string; icon: React.ReactNode }
 interface NavSection { title: string; items: NavItem[] }
@@ -45,6 +49,12 @@ const NAV_SECTIONS: NavSection[] = [
 
 export default function RetailerLayout() {
   const { t } = useTranslation()
+  const { user } = useAuthContext()
+  const location = useLocation()
+
+  if (user && !(user as any).onboardingComplete && !location.pathname.startsWith('/onboarding')) {
+    return <Navigate to="/onboarding" replace />
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -99,7 +109,11 @@ export default function RetailerLayout() {
           <ThemeToggle />
         </header>
         <main className="flex-1 overflow-y-auto">
-          <Outlet />
+          <ErrorBoundary>
+            <Suspense fallback={<PageSkeleton />}>
+              <Outlet />
+            </Suspense>
+          </ErrorBoundary>
         </main>
       </div>
     </div>

@@ -26,6 +26,16 @@ const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 /** Provides auth state from Clerk (or dev fallback) to the component tree */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   if (!CLERK_KEY) {
+    if (import.meta.env.PROD) {
+      return (
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-red-600">Configuration Error</h1>
+            <p className="text-gray-600 mt-2">Authentication is not configured. Contact administrator.</p>
+          </div>
+        </div>
+      );
+    }
     return <DevAuthProvider>{children}</DevAuthProvider>;
   }
   return <ClerkAuthProvider>{children}</ClerkAuthProvider>;

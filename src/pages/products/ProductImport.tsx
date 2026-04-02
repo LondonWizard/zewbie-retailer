@@ -58,10 +58,10 @@ export default function ProductImport() {
         className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${dragOver ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300 bg-gray-50'}`}
       >
         <FileSpreadsheet size={40} className="mx-auto text-gray-400 mb-3" />
-        <p className="text-sm text-gray-600 mb-2">{file ? file.name : 'Drag & drop your CSV/Excel file here'}</p>
+        <p className="text-sm text-gray-600 mb-2">{file ? file.name : 'Drag & drop your CSV file here'}</p>
         <label className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium cursor-pointer hover:bg-gray-50">
           <Upload size={16} /> Browse Files
-          <input type="file" accept=".csv,.xlsx,.xls" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+          <input type="file" accept=".csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
         </label>
       </div>
 
