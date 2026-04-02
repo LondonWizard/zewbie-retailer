@@ -56,9 +56,9 @@ export default function Login() {
             </div>
           )}
           <SignIn
-            path="/auth/login"
+            routing="path" path="/auth/login"
             signUpUrl="/auth/register"
-            fallbackRedirectUrl="/dashboard"
+            forceRedirectUrl="/dashboard"
           />
         </div>
       </div>

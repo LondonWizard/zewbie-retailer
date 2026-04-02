@@ -43,7 +43,7 @@ export default function Register() {
         </div>
       </div>
       <div className="flex-1 flex items-center justify-center p-6">
-        <SignUp path="/auth/register" signInUrl="/auth/login" fallbackRedirectUrl="/onboarding" />
+        <SignUp routing="path" path="/auth/register" signInUrl="/auth/login" forceRedirectUrl="/onboarding" />
       </div>
     </div>
   );
