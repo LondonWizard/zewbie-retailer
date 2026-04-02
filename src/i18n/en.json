@@ -1,0 +1,47 @@
+{
+  "app": {
+    "title": "Zewbie Retailer",
+    "subtitle": "Retailer Portal"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "import": "Import",
+    "inventory": "Inventory",
+    "orders": "Orders",
+    "statistics": "Statistics",
+    "finances": "Finances",
+    "payouts": "Payouts",
+    "revenue": "Revenue",
+    "shipping": "Shipping",
+    "shippingSettings": "Shipping Settings",
+    "account": "Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "apiTests": "API Tests"
+  },
+  "common": {
+    "search": "Search",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "noResults": "No results found",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications",
+    "markAllRead": "Mark all as read"
+  }
+}
