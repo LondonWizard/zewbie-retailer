@@ -1,19 +1,16 @@
 import { Suspense } from 'react'
-import { Outlet, Link } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { PageSkeleton } from '../components/ui/PageSkeleton'
 
-/** Centered layout for authentication pages (login, register, etc.) */
+/**
+ * Auth layout is a minimal passthrough ? individual auth pages
+ * (Login, Register, etc.) control their own centering and layout
+ * because the Clerk components and custom pages have their own styling.
+ */
 export default function AuthLayout() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
-      <Link to="/" className="mb-8">
-        <h1 className="text-2xl font-bold text-indigo-600">Zewbie Retailer</h1>
-      </Link>
-      <div className="w-full max-w-md bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-        <Suspense fallback={<PageSkeleton />}>
-          <Outlet />
-        </Suspense>
-      </div>
-    </div>
+    <Suspense fallback={<PageSkeleton />}>
+      <Outlet />
+    </Suspense>
   )
 }
