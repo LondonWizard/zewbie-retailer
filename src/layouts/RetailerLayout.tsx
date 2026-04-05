@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   Package,
@@ -12,6 +12,7 @@ import {
   User,
   Settings,
   FlaskConical,
+  LogOut,
 } from 'lucide-react'
 import clsx from 'clsx'
 
@@ -73,16 +74,25 @@ const NAV_SECTIONS: NavSection[] = [
       { label: 'Settings', to: '/account/settings', icon: <Settings size={18} /> },
     ],
   },
-  {
-    title: '',
-    items: [
-      { label: 'API Tests', to: '/api-test', icon: <FlaskConical size={18} /> },
-    ],
-  },
+  ...(import.meta.env.DEV
+    ? [{
+        title: '',
+        items: [
+          { label: 'API Tests', to: '/api-test', icon: <FlaskConical size={18} /> },
+        ],
+      }]
+    : []),
 ]
 
 /** Sidebar + main content area layout for authenticated retailer pages */
 export default function RetailerLayout() {
+  const navigate = useNavigate()
+
+  function handleSignOut() {
+    localStorage.removeItem('retailer_token')
+    navigate('/auth/login')
+  }
+
   return (
     <div className="flex h-screen bg-gray-50">
       <aside className="w-60 bg-white border-r border-gray-200 flex flex-col overflow-y-auto">
@@ -122,6 +132,16 @@ export default function RetailerLayout() {
             </div>
           ))}
         </nav>
+
+        <div className="px-3 py-3 border-t border-gray-200">
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+          >
+            <LogOut size={18} />
+            Sign Out
+          </button>
+        </div>
       </aside>
 
       <main className="flex-1 overflow-y-auto">
